@@ -13,11 +13,11 @@ class App extends Component {
 
   config = {
     pages: [
-      'pages/console/index',
       'pages/index/index',
       'pages/list/index',
       'pages/detail/index',
-      'pages/password/index'
+      'pages/password/index',
+      'pages/console/index'
     ],
     window: {
       backgroundColor: "#F6F6F6",

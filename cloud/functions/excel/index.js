@@ -5,45 +5,54 @@ cloud.init()
 
 const db = cloud.database()
 const categoryDB = db.collection('category')
+const questionDB = db.collection('question')
 
 exports.main = async(event) => {
+  await categoryDB.where({
+    _id: db.command.exists(true)
+  }).remove()
+  await questionDB.where({
+    _id: db.command.exists(true)
+  }).remove()
+  
   const { fileID } = event
-  const res = await cloud.downloadFile({ fileID })
-  const sheets = xlsx.parse(res.fileContent)
-  const rows = sheets[0].data
+  const file = await cloud.downloadFile({ fileID })
+  const sheets = xlsx.parse(file.fileContent)
+  const rows = sheets[0].data.slice(1)
 
-  const categoryNames = []
-  const categoryIds = []
-  const question = rows.map(async row => {
+  const categorys = []
+
+  const categoryNames = [...new Set(rows.map(row => row[0]))]
+  const categoryTasks = categoryNames.map(categoryName => {
+    return categoryDB.add({
+      data: {
+        name: categoryName
+      }
+    }).then(res => {
+      categorys.push({
+        _id: res._id,
+        name: categoryName
+      })
+    })
+  })
+
+  await Promise.all(categoryTasks)
+
+  const questionTasks = rows.map(row => {
     const [category_name, question, answer, time, remark] = row
-    const index = categoryNames.indexOf(category_name)
-    if (index === -1) {
-      categoryNames.push(category_name)
-    }
-    return {
+    const category = categorys.find(item => item.name === category_name)
+    const params = {
       category_name,
+      category_id: category._id,
       question,
       answer,
-      time,
+      time: new Date(1900, 0, time - 1).toLocaleString(),
       remark
     }
+    return questionDB.add({
+      data: params
+    })
   })
 
-  const tasks = category.map(item => categoryDB.add({
-    data: {
-      name: item
-    }
-  }))
-
-
-  const question = []
-
-  rows.map(row => row[0])
-
-  let result = await Promise.all(tasks).then(res => {
-    return res
-  }).catch(function(err) {
-    return err
-  })
-  return result
+  await Promise.all(questionTasks)
 }

@@ -12,7 +12,19 @@ export default class Index extends Component {
     category: []
   }
 
-  componentWillMount() {
+  componentWillMount() { }
+
+  componentDidMount() { }
+
+  componentWillUnmount() { }
+
+  componentDidShow() {
+    this.getCategory()
+  }
+
+  componentDidHide() { }
+
+  getCategory () {
     const db = Taro.cloud.database()
     const category = db.collection('category')
     category.get().then(rs => {
@@ -21,14 +33,6 @@ export default class Index extends Component {
       })
     })
   }
-
-  componentDidMount() { }
-
-  componentWillUnmount() { }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
 
   onClick = (id) => {
     Taro.navigateTo({

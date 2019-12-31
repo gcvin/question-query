@@ -8,6 +8,10 @@ export default class Index extends Component {
     navigationBarTitleText: '问题管理'
   }
 
+  state = {
+    loading: false
+  }
+
   componentWillMount() { }
 
   componentDidMount() { }
@@ -19,41 +23,60 @@ export default class Index extends Component {
   componentDidHide() { }
 
   chooseExcel = () => {
+    const that = this
     wx.chooseMessageFile({
       count: 1,
       type: 'file',
       success(res) {
-        this.uploadExcel(res.tempFiles[0].path)
+        that.setState({
+          loading: true
+        })
+        that.uploadExcel(res.tempFiles[0].path)
       }
     })
   }
 
   uploadExcel = (path) => {
+    const that = this
     wx.cloud.uploadFile({
-      cloudPath: 'question.xlsx',
+      cloudPath: 'questions.xlsx',
       filePath: path,
       success(res) {
-        this.parseExcel(res.fileID)
+        that.parseExcel(res.fileID)
       }
     })
   }
 
   parseExcel = (fileID) => {
+    const that = this
     wx.cloud.callFunction({
       name: 'excel',
       data: { fileID },
       success() {
-        Taro.showToast({
-          title: '上传解析成功！'
+        wx.cloud.deleteFile({
+          fileList: [fileID],
+          success() {
+            that.setState({
+              loading: false
+            })
+            Taro.showToast({
+              title: '上传解析成功！',
+              icon: 'none'
+            })
+            Taro.navigateTo({
+              url: `/pages/index/index`
+            })
+          }
         })
       }
     })
   }
 
   render() {
+    const {loading} = this.state
     return (
       <View className='console'>
-        <Button type="primary" className="button" onClick={this.chooseExcel}>上传EXCEL</Button>
+        <Button type="primary" className="button" loading={loading} onClick={this.chooseExcel}>上传EXCEL</Button>
       </View>
     )
   }
