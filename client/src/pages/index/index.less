@@ -1,19 +1,29 @@
 .index {
-    display: flex;
-    align-items: center;
-    min-height: 100vh;
-    font-size: 30px;
-    color: #333;
+  position: relative;
+  padding-top: 200px;
+  font-size: 28px;
+  color: #333;
 }
+
+.console {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #1aad19;
+}
+
 .category {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
 .item {
-    height: 60px;
-    line-height: 60px;
-    padding: 0 20px;
-    margin: 20px;
-    border: 1px solid #d9d9d9;
+  height: 60px;
+  line-height: 60px;
+  padding: 0 20px;
+  margin: 20px;
+  border-top: 1px solid #1aad19;
+  border-bottom: 1px solid #1aad19;
 }

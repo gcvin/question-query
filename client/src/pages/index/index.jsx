@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import './index.less'
 
 export default class Index extends Component {
@@ -12,7 +12,7 @@ export default class Index extends Component {
     category: []
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const db = Taro.cloud.database()
     const category = db.collection('category')
     category.get().then(rs => {
@@ -22,24 +22,31 @@ export default class Index extends Component {
     })
   }
 
-  componentDidMount () { }
+  componentDidMount() { }
 
-  componentWillUnmount () { }
+  componentWillUnmount() { }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  onClick (id) {
+  onClick = (id) => {
     Taro.navigateTo({
       url: `/pages/list/index?id=${id}`
     })
   }
 
-  render () {
+  onConsole = () => {
+    Taro.navigateTo({
+      url: `/pages/password/index`
+    })
+  }
+
+  render() {
     const { category } = this.state
     return (
       <View className='index'>
+        <View className="console" onClick={this.onConsole}>管理员</View>
         <View className="category">
           {category.map(item =>
             <View className="item" key={item._id} onClick={() => this.onClick(item._id)}>{item.name}</View>

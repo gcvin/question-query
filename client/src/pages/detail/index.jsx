@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Input, Button } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import './index.less'
 
 export default class Detail extends Component {
@@ -12,7 +12,7 @@ export default class Detail extends Component {
     detail: {}
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const db = Taro.cloud.database()
     const question = db.collection('question')
     const id = this.$router.params.id
@@ -23,20 +23,21 @@ export default class Detail extends Component {
     })
   }
 
-  componentDidMount () { }
+  componentDidMount() { }
 
-  componentWillUnmount () { }
+  componentWillUnmount() { }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  render () {
+  render() {
     const { detail } = this.state
     return (
       <View className='detail'>
-        <Text>{detail.question}</Text>
-        <Text>{detail.answer}</Text>
+        <View className="question">{detail.question}</View>
+        <View className="time">{detail.time}</View>
+        <View className="answer">{detail.answer}</View>
       </View>
     )
   }

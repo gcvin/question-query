@@ -26,7 +26,7 @@
     "dev:qq": "npm run build:qq -- --watch",
     "dev:quickapp": "npm run build:quickapp -- --watch"
   },
-  "author": "",
+  "author": "gcvin <gc.vin@qq.com>",
   "license": "MIT",
   "dependencies": {
     "@tarojs/components": "2.0.0-beta.12",
@@ -40,8 +40,8 @@
     "@tarojs/taro-swan": "2.0.0-beta.12",
     "@tarojs/taro-tt": "2.0.0-beta.12",
     "@tarojs/taro-weapp": "2.0.0-beta.12",
-    "nervjs": "^1.5.5",
-    "nerv-devtools": "^1.5.5"
+    "nerv-devtools": "^1.5.5",
+    "nervjs": "^1.5.5"
   },
   "devDependencies": {
     "@types/react": "^16.4.6",

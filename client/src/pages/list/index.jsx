@@ -10,62 +10,75 @@ export default class List extends Component {
 
   state = {
     keyword: '',
-    question: []
+    question: [],
+    loading: false
   }
 
-  componentWillMount () { }
+  componentWillMount() { }
 
-  componentDidMount () { }
+  componentDidMount() { }
 
-  componentWillUnmount () { }
+  componentWillUnmount() { }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  onInput (value) {
+  onSearch = () => {
+    const { keyword } = this.state
+    if (!keyword.trim()) {
+      return Taro.showToast({
+        icon: 'none',
+        title: '查询问题不能为空！'
+      })
+    }
     this.setState({
-      keyword: value
+      loading: true
     })
-  }
-
-  onSearch () {
     const db = Taro.cloud.database()
     const question = db.collection('question')
     const id = this.$router.params.id
     question.where({
       category_id: id,
       question: {
-        $regex: '.*' + this.state.keyword + '.*',
+        $regex: '.*' + keyword + '.*',
         $options: 'i'
       }
     }).get().then(rs => {
       this.setState({
-        question: rs.data
+        question: rs.data,
+        loading: false
       })
     })
   }
 
-  onClick (id) {
+  onClick = (id) => {
     Taro.navigateTo({
       url: `/pages/detail/index?id=${id}`
     })
   }
 
-  render () {
-    const { question } = this.state
+  onInput = (e) => {
+    this.setState({
+      keyword: e.currentTarget.value
+    })
+  }
+
+  render() {
+    const { question, loading } = this.state
     return (
       <View className='list'>
-        <Input type='text' placeholder='请输入查询问题' onInput={(e) => this.onInput(e.currentTarget.value)}/>
-        <Button plain type='primary' onClick={() => this.onSearch()}>查询</Button>
-        <View className="question">
-          {question.map(item =>
-            <View className="item" key={item._id} onClick={() => this.onClick(item._id)}>
-              <Text>{item.question}</Text>
-              <Text>{item.answer}</Text>
-            </View>
-          )}
+        <View className="form">
+          <Input placeholder='请输入查询问题' className="input" onInput={this.onInput} />
+          <Button className="button" type='primary' loading={loading} onClick={this.onSearch}>查询</Button>
         </View>
+        {question.length && question.map(item =>
+          <View className="item" key={item._id} onClick={() => this.onClick(item._id)}>
+            <View className="question">{item.question}</View>
+            <View className="answer">{item.answer}</View>
+          </View>
+        )}
+        {!question.length && <View className="blank">暂无查询结果</View>}
       </View>
     )
   }
