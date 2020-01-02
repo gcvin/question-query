@@ -19,7 +19,7 @@ export default class Password extends Component {
   componentDidHide() { }
 
   onClick = () => {
-    if (this.password === '123abc') {
+    if (this.password === '123123') {
       Taro.navigateTo({
         url: `/pages/console/index`
       })

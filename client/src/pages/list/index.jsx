@@ -2,6 +2,9 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Input, Button } from '@tarojs/components'
 import './index.less'
 
+
+const db = Taro.cloud.database()
+const questionDB = db.collection('question')
 export default class List extends Component {
 
   config = {
@@ -14,7 +17,16 @@ export default class List extends Component {
     loading: false
   }
 
-  componentWillMount() { }
+  componentWillMount() {
+    const id = this.$router.params.id
+    questionDB.where({
+      category_id: id
+    }).get().then(rs => {
+      this.setState({
+        question: rs.data
+      })
+    })
+  }
 
   componentDidMount() { }
 
@@ -35,11 +47,7 @@ export default class List extends Component {
     this.setState({
       loading: true
     })
-    const db = Taro.cloud.database()
-    const question = db.collection('question')
-    const id = this.$router.params.id
-    question.where({
-      category_id: id,
+    questionDB.where({
       question: {
         $regex: '.*' + keyword + '.*',
         $options: 'i'

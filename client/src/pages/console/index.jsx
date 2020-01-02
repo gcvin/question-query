@@ -2,6 +2,9 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
 import './index.less'
 
+const db = Taro.cloud.database()
+const questionDB = db.collection('question')
+
 export default class Index extends Component {
 
   config = {
@@ -51,24 +54,29 @@ export default class Index extends Component {
     const that = this
     wx.cloud.callFunction({
       name: 'excel',
-      data: { fileID },
-      success() {
+      data: { fileID }
+    }).then(res => {
+      const tasks = res.result.map(item => questionDB.add({data: item}))
+      Promise.all(tasks).then((rs) => {
         wx.cloud.deleteFile({
-          fileList: [fileID],
-          success() {
-            that.setState({
-              loading: false
-            })
-            Taro.showToast({
-              title: '上传解析成功！',
-              icon: 'none'
-            })
+          fileList: [fileID]
+        }).then(() => {
+          that.setState({
+            loading: false
+          })
+          Taro.showToast({
+            title: `成功导入${rs.length}条数据！`,
+            icon: 'none'
+          })
+          setTimeout(() => {
             Taro.navigateTo({
               url: `/pages/index/index`
             })
-          }
+          }, 1000)
         })
-      }
+      })
+    }).catch(err => {
+      console.log(err)
     })
   }
 
