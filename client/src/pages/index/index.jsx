@@ -2,6 +2,8 @@ import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import './index.less'
 
+Taro.showShareMenu()
+
 export default class Index extends Component {
 
   config = {
